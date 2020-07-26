@@ -24,7 +24,7 @@ import com.vaagdevi.newsneventsadmin.Events;
 import com.vaagdevi.newsneventsadmin.GuestLectures;
 import com.vaagdevi.newsneventsadmin.News;
 import com.vaagdevi.newsneventsadmin.Notifications;
-import com.vaagdevi.newsneventsadmin.Profile;
+import com.vaagdevi.newsneventsadmin.ContactDeveloper;
 import com.vaagdevi.newsneventsadmin.R;
 import com.vaagdevi.newsneventsadmin.Workshops;
 
@@ -122,7 +122,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getActivity(), Profile.class));
+                startActivity(new Intent(getActivity(), ContactDeveloper.class));
 
             }
         });

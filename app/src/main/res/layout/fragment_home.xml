@@ -244,7 +244,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/roboto_bold"
-                                android:text="Profile"
+                                android:text="Contact Developer"
                                 android:textColor="#5E5E5E"
                                 android:textSize="18dp" />
 
@@ -254,13 +254,11 @@
                                 android:layout_height="80dp"
                                 android:layout_alignParentRight="true"
                                 android:layout_alignParentBottom="true"
-                                android:src="@drawable/profile_image" />
+                                android:src="@drawable/developer_image2" />
 
                         </RelativeLayout>
 
                     </androidx.cardview.widget.CardView>
-
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -368,7 +366,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="7dp"
-                    android:text="News n Events"
+                    android:text="News n Events Admin"
                     android:textColor="#FFF"
                     android:textSize="16sp" />
 

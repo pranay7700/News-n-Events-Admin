@@ -37,8 +37,8 @@
             android:label="Notifications"
             android:parentActivityName=".Dashboard" />
         <activity
-            android:name=".Profile"
-            android:label="Profile"
+            android:name=".ContactDeveloper"
+            android:label="Contact Developer"
             android:parentActivityName=".Dashboard" />
         <activity
             android:name=".Events"
