@@ -44,7 +44,7 @@
                     app:layout_collapseMode="parallax" />
 
                 <ImageView
-                    android:id="@+id/edit_guestlectures_editimage"
+                    android:id="@+id/edit_notifications_editimage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -52,11 +52,11 @@
                     android:layout_marginEnd="29dp"
                     android:layout_marginBottom="38dp"
                     android:elevation="5dp"
-                    android:src="@drawable/ic_profile_photo" />
+                    android:src="@drawable/ic_profile_photo2" />
 
                 <!--
                                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                    android:id="@+id/edit_guestlectures_editimage"
+                                    android:id="@+id/edit_notifications_editimage"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
