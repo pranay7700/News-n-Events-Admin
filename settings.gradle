@@ -1,0 +1,2 @@
+rootProject.name='News n Events Admin'
+include ':app'
