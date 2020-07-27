@@ -132,7 +132,6 @@ public class GuestLectures extends AppCompatActivity {
             }
 
         });
-
     }
 
     public void checkConnection() {

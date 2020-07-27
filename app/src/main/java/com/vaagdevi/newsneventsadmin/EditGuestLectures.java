@@ -23,12 +23,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
+
+import java.sql.Time;
+import java.util.Date;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -36,11 +43,8 @@ public class EditGuestLectures extends AppCompatActivity {
 
     CircleImageView Edit_GuestLecures_profilepic;
     FloatingActionButton Edit_GuestLectures_EditImage;
-    EditText Edit_GuestLectures_Name;
-    EditText Edit_GuestLectures_Email;
-    EditText Edit_GuestLectures_Date;
-    EditText Edit_GuestLectures_Time;
-    EditText Edit_GuestLectures_Desc;
+    EditText Edit_GuestLectures_Name, Edit_GuestLectures_Email, Edit_GuestLectures_Date, Edit_GuestLectures_Time, Edit_GuestLectures_Desc;
+    String NameStr, EmailStr, DateStr, TimeStr, DescStr;
     Button Edit_GuestLectures_Update;
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
@@ -64,6 +68,7 @@ public class EditGuestLectures extends AppCompatActivity {
         Edit_GuestLectures_Time = (EditText) findViewById(R.id.edit_guestlectures_timeTV);
         Edit_GuestLectures_Desc = (EditText) findViewById(R.id.edit_guestlectures_descTV);
         Edit_GuestLectures_Update = (Button) findViewById(R.id.BTNguestlectures_update);
+
         progressDialog = new ProgressDialog(EditGuestLectures.this);
         mAuth = FirebaseAuth.getInstance();
         currentId = mAuth.getCurrentUser().getUid();
@@ -90,11 +95,14 @@ public class EditGuestLectures extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                progressDialog.setTitle("Updating");
-                progressDialog.setMessage("Please wait...");
-                checkConnection();
+                NameStr = Edit_GuestLectures_Name.getText().toString();
+                EmailStr = Edit_GuestLectures_Email.getText().toString();
+                DateStr = Edit_GuestLectures_Date.getText().toString();
+                TimeStr = Edit_GuestLectures_Time.getText().toString();
+                DescStr = Edit_GuestLectures_Desc.getText().toString();
 
                 Update_GuestLectures();
+
             }
         });
     }
@@ -124,7 +132,7 @@ public class EditGuestLectures extends AppCompatActivity {
                         filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                databaseReference.child("Guest Lecture").setValue(String.valueOf(uri));
+                                databaseReference.child("profilepic").setValue(String.valueOf(uri));
                                 progressDialog.dismiss();
                                 Toast.makeText(EditGuestLectures.this, "Guest Lecture image updated!", Toast.LENGTH_SHORT).show();
                             }
@@ -183,8 +191,47 @@ public class EditGuestLectures extends AppCompatActivity {
         }
     }*/
 
-    public void Update_GuestLectures(){
+    public void Update_GuestLectures() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
 
+                    progressDialog.setTitle("Updating");
+                    progressDialog.setMessage("Please wait...");
+                    checkConnection();
+
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("name", NameStr);
+                    hashMap.put("email", EmailStr);
+                    hashMap.put("date", DateStr);
+                    hashMap.put("time", TimeStr);
+                    hashMap.put("description", DescStr);
+                    hashMap.put("profilepic", "");
+
+                    databaseReference.updateChildren(hashMap)
+                            .addOnCompleteListener(new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+                                    if (task.isSuccessful()) {
+                                        progressDialog.dismiss();
+                                        startActivity(new Intent(EditGuestLectures.this, GuestLectures.class));
+                                        overridePendingTransition(0, 0);
+                                        finish();
+                                        Toast.makeText(EditGuestLectures.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(EditGuestLectures.this, "Error occurred! Try again", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void checkConnection() {
