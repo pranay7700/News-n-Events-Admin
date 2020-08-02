@@ -1,3 +1,6 @@
+//EditGuestLectures.java(1st version)
+
+
 package com.vaagdevi.newsneventsadmin;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.sql.Time;
@@ -52,7 +57,8 @@ public class EditGuestLectures extends AppCompatActivity {
     private StorageReference storageReference;
     private Uri imageUri;
     private final static int GalleryPick = 1;
-    String currentId;
+    String currentId, anotherGLpost;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -69,20 +75,19 @@ public class EditGuestLectures extends AppCompatActivity {
         Edit_GuestLectures_Desc = (EditText) findViewById(R.id.edit_guestlectures_descTV);
         Edit_GuestLectures_Update = (Button) findViewById(R.id.BTNguestlectures_update);
 
+        progressBar = findViewById(R.id.progress_GL_post);
         progressDialog = new ProgressDialog(EditGuestLectures.this);
         mAuth = FirebaseAuth.getInstance();
         currentId = mAuth.getCurrentUser().getUid();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Guest Lectures");
+        Intent intent = getIntent();
+        anotherGLpost = intent.getStringExtra("Guest Lectures");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Guest Lectures").child(currentId);
         storageReference = FirebaseStorage.getInstance().getReference("Guest Lectures").child(currentId + ".jpg");
 
 
-        Edit_GuestLecures_profilepic.setOnClickListener(new View.OnClickListener() {
+        Edit_GuestLectures_EditImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*CropImage.activity(imageUri)
-                        .setAspectRatio(1, 1)
-                        .start(EditGuestLectures.this);*/
-
                 final Intent setImage = new Intent();
                 setImage.setAction(Intent.ACTION_GET_CONTENT);
                 setImage.setType("image/*");
@@ -107,7 +112,75 @@ public class EditGuestLectures extends AppCompatActivity {
         });
     }
 
+    public void Update_GuestLectures() {
+        progressDialog.setTitle("Updating");
+        progressDialog.setMessage("Please wait...");
+        checkConnection();
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("name", NameStr);
+        hashMap.put("email", EmailStr);
+        hashMap.put("date", DateStr);
+        hashMap.put("time", TimeStr);
+        hashMap.put("description", DescStr);
+
+        databaseReference.updateChildren(hashMap)
+                .addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            progressDialog.dismiss();
+                            startActivity(new Intent(EditGuestLectures.this, GuestLectures.class));
+                            overridePendingTransition(0, 0);
+                            finish();
+                            Toast.makeText(EditGuestLectures.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(EditGuestLectures.this, "Error occurred! Try again", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        progressDialog.dismiss();
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GalleryPick && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            progressDialog.dismiss();
+            imageUri = data.getData();
+            Picasso.get().load(imageUri).resize(Edit_GuestLecures_profilepic.getMeasuredWidth(), Edit_GuestLecures_profilepic.getMeasuredHeight()).placeholder(R.drawable.profile_image3).into(Edit_GuestLecures_profilepic);
+//            Edit_GuestLectures_EditImage.setText("Change Image");
+
+            final StorageReference filePath = storageReference;
+
+            progressDialog.setTitle("Updating Your Profile Photo");
+            progressDialog.setMessage("Please wait...");
+            checkConnection();
+
+            progressDialog.show();
+
+            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            databaseReference.child("profilepic").setValue(String.valueOf(uri));
+                            progressDialog.dismiss();
+                            Toast.makeText(EditGuestLectures.this, "Guest Lecture image updated!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+
+        }
+    }
+
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -119,7 +192,7 @@ public class EditGuestLectures extends AppCompatActivity {
 
                 final StorageReference filePath = storageReference;
 
-                progressDialog.setTitle("Updating Your Guest Lecture Photo");
+                progressDialog.setTitle("Updating Your Profile Photo");
                 progressDialog.setMessage("Please wait...");
                 checkConnection();
 
@@ -134,14 +207,14 @@ public class EditGuestLectures extends AppCompatActivity {
                             public void onSuccess(Uri uri) {
                                 databaseReference.child("profilepic").setValue(String.valueOf(uri));
                                 progressDialog.dismiss();
-                                Toast.makeText(EditGuestLectures.this, "Guest Lecture image updated!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditGuestLectures.this, "Profile image updated!", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 });
             }
         }
-    }
+    }*/
 
    /* public void Update_GuestLectures(){
 
@@ -191,48 +264,6 @@ public class EditGuestLectures extends AppCompatActivity {
         }
     }*/
 
-    public void Update_GuestLectures() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-
-                    progressDialog.setTitle("Updating");
-                    progressDialog.setMessage("Please wait...");
-                    checkConnection();
-
-                    HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put("name", NameStr);
-                    hashMap.put("email", EmailStr);
-                    hashMap.put("date", DateStr);
-                    hashMap.put("time", TimeStr);
-                    hashMap.put("description", DescStr);
-                    hashMap.put("profilepic", "");
-
-                    databaseReference.updateChildren(hashMap)
-                            .addOnCompleteListener(new OnCompleteListener() {
-                                @Override
-                                public void onComplete(@NonNull Task task) {
-                                    if (task.isSuccessful()) {
-                                        progressDialog.dismiss();
-                                        startActivity(new Intent(EditGuestLectures.this, GuestLectures.class));
-                                        overridePendingTransition(0, 0);
-                                        finish();
-                                        Toast.makeText(EditGuestLectures.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        progressDialog.dismiss();
-                                        Toast.makeText(EditGuestLectures.this, "Error occurred! Try again", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     public void checkConnection() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(

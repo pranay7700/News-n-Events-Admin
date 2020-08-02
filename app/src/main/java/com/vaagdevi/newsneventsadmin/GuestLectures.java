@@ -13,16 +13,23 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GuestLectures extends AppCompatActivity {
 
@@ -32,6 +39,10 @@ public class GuestLectures extends AppCompatActivity {
     GuestLecturesMyAdapter adapter;
     SwipeRefreshLayout refreshLayout;
     FloatingActionButton Edit_GuestLectures;
+    private FirebaseAuth mAuth;
+    private StorageReference storageReference;
+    private DatabaseReference databaseReference;
+    String currentId;
    /* AdView mAdView;
     private InterstitialAd mInterstitialAd;*/
 
@@ -41,16 +52,22 @@ public class GuestLectures extends AppCompatActivity {
         setContentView(R.layout.activity_guest_lectures);
 
         recyclerView = (RecyclerView) findViewById(R.id.guestlectureRV);
-        recyclerView.setLayoutManager( new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         refreshLayout = findViewById(R.id.refresh_guest_lectures);
         Edit_GuestLectures = (FloatingActionButton) findViewById(R.id.edit_guest_lectures);
+
+        mAuth = FirebaseAuth.getInstance();
+        currentId = mAuth.getCurrentUser().getUid();
+        databaseReference = FirebaseDatabase.getInstance().getReference("Guest Lectures").child(currentId);
 
         Edit_GuestLectures.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(GuestLectures.this,EditGuestLectures.class));
+                startActivity(new Intent(GuestLectures.this, EditGuestLectures.class));
             }
         });
+
+
 
        /* // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, "ca-app-pub-2546283744340576~1317058396");
@@ -86,12 +103,11 @@ public class GuestLectures extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren())
-                {
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     GuestLecturesRegdatabase guestLecturesRegdatabase = dataSnapshot1.getValue(GuestLecturesRegdatabase.class);
                     list.add(guestLecturesRegdatabase);
                 }
-                adapter = new GuestLecturesMyAdapter(GuestLectures.this,list);
+                adapter = new GuestLecturesMyAdapter(GuestLectures.this, list);
                 recyclerView.setAdapter(adapter);
             }
 

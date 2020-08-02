@@ -6,10 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -53,16 +57,33 @@ public class GuestLecturesMyAdapter extends RecyclerView.Adapter<GuestLecturesMy
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView name, email,date,time,description;
-        ImageView profilePic;
+        ImageView profilePic,guestlecturesDEL;
+        private FirebaseAuth mAuth;
+        private DatabaseReference databaseReference;
+        String currentId;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+
+            mAuth = FirebaseAuth.getInstance();
+            currentId = mAuth.getCurrentUser().getUid();
+            databaseReference = FirebaseDatabase.getInstance().getReference("Guest Lectures").child(currentId);
+
             profilePic = (ImageView) itemView.findViewById(R.id.guestlecture_profilepicIV);
             name = (TextView) itemView.findViewById(R.id.guestlecture_nameTV);
             email = (TextView) itemView.findViewById(R.id.guestlecture_emailTV);
             date = (TextView) itemView.findViewById(R.id.guestlecture_dateTV);
             time = (TextView) itemView.findViewById(R.id.guestlecture_timeTV);
             description = (TextView) itemView.findViewById(R.id.guestlecture_descTV);
+
+            guestlecturesDEL = (ImageView) itemView.findViewById(R.id.GuestLectures_closeIV);
+
+            guestlecturesDEL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    databaseReference.removeValue();
+                }
+            });
 
         }
     }

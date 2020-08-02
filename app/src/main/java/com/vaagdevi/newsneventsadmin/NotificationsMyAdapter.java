@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -19,8 +22,7 @@ public class NotificationsMyAdapter extends RecyclerView.Adapter<NotificationsMy
     Context context;
     ArrayList<NotificationsRegdatabase> notificationsRegdatabase;
 
-    public NotificationsMyAdapter(Context c , ArrayList<NotificationsRegdatabase> n)
-    {
+    public NotificationsMyAdapter(Context c, ArrayList<NotificationsRegdatabase> n) {
         context = c;
         notificationsRegdatabase = n;
     }
@@ -28,7 +30,7 @@ public class NotificationsMyAdapter extends RecyclerView.Adapter<NotificationsMy
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NotificationsMyAdapter.MyViewHolder(LayoutInflater.from(context).inflate(R.layout.notifications_cardview,parent,false));
+        return new NotificationsMyAdapter.MyViewHolder(LayoutInflater.from(context).inflate(R.layout.notifications_cardview, parent, false));
     }
 
     @Override
@@ -47,14 +49,32 @@ public class NotificationsMyAdapter extends RecyclerView.Adapter<NotificationsMy
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView title,description,date;
-        ImageView image;
+        private FirebaseAuth mAuth;
+        private DatabaseReference databaseReference;
+        String currentId;
+        TextView title, description, date;
+        ImageView image, notificationsDEL;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            mAuth = FirebaseAuth.getInstance();
+            currentId = mAuth.getCurrentUser().getUid();
+            databaseReference = FirebaseDatabase.getInstance().getReference("Notifications").child(currentId);
+
             image = (ImageView) itemView.findViewById(R.id.notifications_imageIV);
             title = (TextView) itemView.findViewById(R.id.notifications_titleTV);
             description = (TextView) itemView.findViewById(R.id.notifications_descTV);
             date = (TextView) itemView.findViewById(R.id.notifications_dateTV);
+
+            notificationsDEL = (ImageView) itemView.findViewById(R.id.Notifications_close);
+
+            notificationsDEL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    databaseReference.removeValue();
+                }
+            });
+
         }
     }
 }

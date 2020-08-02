@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:weightSum="2">
 
@@ -30,8 +30,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp"
                 android:layout_marginTop="120dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="17dp"
                 android:elevation="5dp"
                 android:src="@drawable/ic_profile_photo"
@@ -50,7 +50,7 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_workshops_nameTV"
+                android:id="@+id/edit_workshops_nameET"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/edit_workshops_imageIV"
@@ -58,72 +58,72 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="24dp"
                 android:hint="Name"
-                android:maxLines="1"
                 android:maxLength="12"
+                android:maxLines="1"
                 android:textColor="#000"
                 android:textSize="25dp"
                 android:textStyle="bold" />
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_workshops_placeTV"
+                android:id="@+id/edit_workshops_placeET"
                 android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_workshops_nameTV"
+                android:layout_below="@+id/edit_workshops_nameET"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:hint="Place"
-                android:maxLines="1"
-                android:maxLength="10"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="234dp"
                 android:layout_marginEnd="172dp"
                 android:layout_marginRight="150dp"
+                android:hint="Place"
+                android:maxLength="10"
+                android:maxLines="1"
                 android:textColor="#000" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_workshops_dateTV"
+                android:id="@+id/edit_workshops_dateET"
                 android:layout_width="115dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/edit_workshops_imageIV"
-                android:layout_alignRight="@+id/edit_workshops_nameTV"
+                android:layout_alignRight="@+id/edit_workshops_nameET"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:hint="Date"
-                android:maxLines="1"
-                android:maxLength="10"
                 android:layout_marginTop="193dp"
                 android:layout_marginEnd="23dp"
                 android:layout_marginRight="-148dp"
+                android:hint="Date"
+                android:maxLength="10"
+                android:maxLines="1"
                 android:textColor="#000" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_workshops_timeTV"
+                android:id="@+id/edit_workshops_timeET"
                 android:layout_width="115dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_workshops_dateTV"
-                android:layout_alignRight="@+id/edit_workshops_placeTV"
+                android:layout_below="@+id/edit_workshops_dateET"
+                android:layout_alignRight="@+id/edit_workshops_placeET"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:hint="Time"
-                android:maxLines="1"
-                android:maxLength="10"
                 android:layout_marginTop="232dp"
                 android:layout_marginEnd="23dp"
                 android:layout_marginRight="-147dp"
+                android:hint="Time"
+                android:maxLength="10"
+                android:maxLines="1"
                 android:textColor="#000" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/workshops_descTV"
+                android:id="@+id/workshops_descET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:hint="Description"
-                android:maxLength="250"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="275dp"
                 android:layout_marginEnd="10dp"
+                android:hint="Description"
+                android:maxLength="250"
                 android:textAlignment="gravity"
                 android:textColor="#000" />
         </RelativeLayout>
@@ -134,12 +134,12 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edit_workshops_CV"
-        android:background="@drawable/bg_ui"
-        android:textColor="@color/colorWhite"
         android:layout_centerHorizontal="true"
-        android:text="Update"
         android:layout_margin="20dp"
+        android:background="@drawable/bg_ui"
+        android:text="Update"
         android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
         android:textSize="20sp" />
 
 </RelativeLayout>
